@@ -1,2 +1,24 @@
-# fmriprep2spm
-ugly matlab script for reading fmriprep output and creating files for SPM GLM analysis
+# Gplus
+Abbreviation for the project: G+
+
+ABOUT THE PROJECT:
+Schizophrenia is one of the most frequent mental with symptoms like hallucinations and ego-disturbances, affecting approximately 1% of the population. In many cases these so-called positive symptoms can be successfully treated by medication. Moreover there are severe thought and language impairments manifesting in communicative dysfunctions and therefore in social isolation that cannot be treated medically. One of the underlying communicative dysfunctions in patients with schizophrenia is the inability to integrate gestural information: Patients tend to misinterpret information from two modalities (auditory and visually). Several previous studies have shown reduced skills especially in interpreting gesture accompanying figurative speech.
+With the G+ project we have established a standardised eight-hour training programme, training gesture skills. We investigate the neural plasticity effects of the training on social-cognitive abilities in patients with schizophrenia. Throughout the programme, we use perceptual tasks as well as gesture production to improve the patient’s integration skills. Furthermore, we focus on cognitive aspects of gesture to facilitate social-cognitive functioning in everyday life. We also offer information about gesture and its benefits for communication. With the help of functional Magnetic Resonance Imaging (fMRI) and behavioral measures, we seek to investigate the implications for future therapy, in order to improve treatment methods for patients with schizophrenia. For further information, please check our study protocol (https://www.frontiersin.org/articles/10.3389/fpsyt.2020.00110/full) and public OSF project (https://osf.io/uh4f9/).
+
+ABOUT THE CODE:
+Here I provide my very first preliminary scripts for processing neural and behavioural data from G+ project. For fMRI preprocessing, I use fMRIPrep (https://github.com/poldracklab/fmriprep). Scripts for further analyses are written in matlab. Work is still in progress.
+
+The scripts beginning with "container" are meant to import automatically fmriprep output and create the files required for further analyses with SPM. Should work for all data that is structured in BIDS format (which should be the case for images preprocessed with fmriprep). 
+
+REQUIRED DATA STRUCTURE:
+The scripts expect fmriprep output to be stored in a "derivatives" directory and your original BIDS in a "bids" directory. 
+Your original subjects' bids directories should contain events.tsv files which usually contain the following information (=columns) regarding your functional data: 'onset', 'duration', 'trial_type', 'response_time', 'stim_file', 'response'. 
+
+HOW TO USE THESE SCRIPTS:
+The only script that needs modification is the "loop" script. Here you should change the path to your derivatives directory ("derivatives_dir"), containing the fmriprep output. The "loop" file will automatically call the function files/job files that are associated (assuming the scripts are stored in the same directory and are added to the matlab path). If your data follow the required structure, you don't have to change anything in the scripts besides the derivative directory's path ("derivatives_dir"). Exception: If you wish to change the smoothing kernel, you can do that in the job file. Also in the jobfile you can specify, which of the preprocessed nifti files you want to use for your further analyses (that's just necessary if you specified that fmriprep creates more than one preprocessed 4D nifti file per subject, session and run). Here, I provide an example where I pick the preprocessed files that are resampled (2x2x2mm): ending with "_res-2_desc-preproc_bold.nii.gz" (specification in line 7 of job.m file).
+
+WHAT THE SCRIPTS EXACTLY DO:
+1. From the events.tsv files from your original bids data directory, the scripts will read the conditions' names, onset times and durations and create multiple conditions .mat files required for 1st level analysis in SPM.
+2. In a second step, the scripts read motion regressors from the regressors.tsv files provided by fmriprep and create SPM file in R format containing the six standard movement regressors (x_trans, y_trans, z_trans, x_rot, y_rot, z_rot). 
+3. In a third step, these scripts decompress the gz zipped preprocessed functional images from fmriprep in order to make them readable for SPM and smooth the fmriprep-preprocessed images (smoothing kernel = [6 6 6]) (because there is no smoothing included in fmriprep but most SPM users want their data to be smoothed). The prefix 's' will be added to the smoothed data (following the SPM terminology), so you can decide which data you want to use for further analyses (the unsmoothed images without or the smoothed images with the 's' prefix).
+4. These scripts create a new directory in your derivatives folder, where the output of these scripts will be stored.
