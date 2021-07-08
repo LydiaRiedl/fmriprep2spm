@@ -98,7 +98,7 @@ cd(fullfile(derivatives_dir(1:length(derivatives_dir)-12))) % cd(fullfile(deriva
 bids_dir = fullfile(strcat(derivatives_dir(1:length(derivatives_dir)-11), 'bids')); % CHECK! Your BIDS directory
 prepro_dir = fullfile(derivatives_dir, '/fmriprep'); % CHECK! Directory of your preprocessed functional images
 tgt_dir = fullfile(derivatives_dir, '/analyses/import_fmriprep_for_spm_analyses'); % CHECK! target directory where output files will be stored
-jobfile = {'/YOUR/PATH/scripts/container_gplus_01_import_fmriprep_res_job.m'};
+jobfile = {'/YOUR/PATH/container_gplus_01_import_fmriprep_res_job.m'};
 
 %% find preprocessed images (ending desc-preproc_bold.nii.gz) in the directory
 ... with the preprocessed images (incl. subdirectories)
